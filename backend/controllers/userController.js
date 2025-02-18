@@ -129,3 +129,20 @@ export const getProfile = catchAsyncError(async(req,res,next)=>{
         user,
     });
 });
+export const logout = catchAsyncError(async(req,res,next)=>{
+    res.status(200).cookie("token", "", {
+        expires : new Date(Date.now()),
+        httpOnly : true,
+    }).json ({
+        success :  true,
+        message : "Logout Successfully"
+    });
+});
+export const fetchLeaderboard = catchAsyncError(async(req,res,next)=>{
+    const users = await User.find({moneySpent : {$gt :0}});
+    const leaderboard = users.sort((a,b)=> b.moneySpent - a.moneySpent);
+    res.status(200).json({
+        success: true,
+        leaderboard
+    })
+})
