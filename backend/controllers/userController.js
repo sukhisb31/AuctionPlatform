@@ -122,6 +122,7 @@ export const login = catchAsyncError(async (req,res,next)=>{
     // if user and password is matched then response is login successfully
     generateToken(user, "Login Successfully", 201, res);
 });
+// get profile your user
 export const getProfile = catchAsyncError(async(req,res,next)=>{
     const user = req.user;
     res.status (200).json({
@@ -129,15 +130,17 @@ export const getProfile = catchAsyncError(async(req,res,next)=>{
         user,
     });
 });
-export const logout = catchAsyncError(async(req,res,next)=>{
-    res.status(200).cookie("token", "", {
+// user logout function
+export const logout = (async(req,res,next)=>{
+    res.status(200).cookie("token", "",{
         expires : new Date(Date.now()),
         httpOnly : true,
-    }).json ({
-        success :  true,
+    }).json({
+        success : true,
         message : "Logout Successfully"
-    });
-});
+    })
+})
+// fetch leadership board check who`s number one in bidding
 export const fetchLeaderboard = catchAsyncError(async(req,res,next)=>{
     const users = await User.find({moneySpent : {$gt :0}});
     const leaderboard = users.sort((a,b)=> b.moneySpent - a.moneySpent);
