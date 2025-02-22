@@ -15,6 +15,11 @@ const auctionSchema = new mongoose.model({
         type: String,
         required : true,
     },
+    condition : {
+        type : String,
+        enum :["New", "Used"],
+    },
+    category : String,
     currentBid :{
         type : Number,
         default : 0,
