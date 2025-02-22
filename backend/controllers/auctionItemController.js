@@ -53,8 +53,9 @@ try {
             "cloudinaryError : ", cloudinaryResponse || "Internal server error"
         );
         return next (new ErrorHandler("Failed to upload image in cloudinary", 500));
-        
     };
+    // create auction
+    
 } catch (error) {
     return next (new ErrorHandler(error.message || "failed to create auction", 500));
 }
