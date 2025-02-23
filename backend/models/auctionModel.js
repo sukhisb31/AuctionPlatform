@@ -2,7 +2,7 @@
 
 import mongoose from "mongoose";
 
-const auctionSchema = new mongoose.model({
+const auctionSchema = new mongoose.Schema({
     title: {
         type: String,
         required : true,

@@ -5,7 +5,7 @@ import ErrorHandler from "../middlewares/error.js";
 
 // check active auction or not\
 
-const addNewAuctionItem = catchAsyncError(async (req, res, next) => {
+export const addNewAuctionItem = catchAsyncError(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return next(new ErrorHandler("Auction image is required", 400));
   }
@@ -13,10 +13,10 @@ const addNewAuctionItem = catchAsyncError(async (req, res, next) => {
 
   // validate image format
   const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
-  if (allowedFormats.includes(image.mimetype)) {
+  if (!allowedFormats.includes(image.mimetype)) {
     return next(new ErrorHandler("Invalid image format", 400));
   }
-});
+
 
 // check error in validation
 const {
@@ -39,7 +39,7 @@ if (
   !category ||
   !startingBid
 ) {
-  return next(new ErrorHandler("fill all fields", 400));
+  return next(new ErrorHandler("please provide all details", 400));
 }
 if (new Date(startTime) < Date.now()) {
   return next(
@@ -60,7 +60,7 @@ const activeOneAuction = await Auction.find({
   createdBy: req.user._id,
   endTime: { $gt: Date.now() },
 });
-if (activeOneAuction.length > 0) {
+if (activeOneAuction) {
   return next(new ErrorHandler("You have already running one auction", 400));
 }
 try {
@@ -78,7 +78,7 @@ try {
     return next(new ErrorHandler("Failed to upload image in cloudinary", 500));
   }
   // create auction
-  const auctionItem = await Auction.create({
+  const auctionCreate = await Auction.create({
     title,
     description,
     startTime,
@@ -86,19 +86,19 @@ try {
     condition,
     category,
     startingBid,
-    image : {
-        public_id : cloudinaryResponse.public_id,
-        url : cloudinaryResponse.secure_url,
+    image: {
+      public_id: cloudinaryResponse.public_id,
+      url: cloudinaryResponse.secure_url,
     },
-    createdBy : req.user._id,
   });
   return res.status(201).json({
-    success : true,
-    message :  `Auction item created and will be listed on auction page at ${startTime}`,
+    success: true,
+    message: `Auction item created and will be listed on auction page at ${startTime}`,
     auctionItem,
-  })
+  });
 } catch (error) {
   return next(
     new ErrorHandler(error.message || "failed to create auction", 500)
   );
 }
+});
