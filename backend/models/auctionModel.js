@@ -9,11 +9,9 @@ const auctionSchema = new mongoose.Schema({
     },
     description : {
         type : String,
-        required : true,
     },
-    startBid : {
-        type: String,
-        required : true,
+    startingBid : {
+        type: Number,
     },
     condition : {
         type : String,
@@ -31,7 +29,7 @@ const auctionSchema = new mongoose.Schema({
         type : String,
     },
     image :{
-        public_Id : {
+        public_id : {
             type : String,
             required : true,
         },
@@ -43,8 +41,13 @@ const auctionSchema = new mongoose.Schema({
     createdBy : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
+        required : true,
     },
-    bid: [
+    currentBid:{
+        type : Number,
+        default:0,
+    },
+    bids: [
         {
             userId :{
                 type: mongoose.Schema.Types.ObjectId,
@@ -59,7 +62,7 @@ const auctionSchema = new mongoose.Schema({
         type : Boolean,
         default : false,
     },
-    highestBid : {
+    highestBidder : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User"
     },

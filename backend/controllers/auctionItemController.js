@@ -2,6 +2,8 @@ import { User } from "../models/user.model.js";
 import { Auction } from "../models/auctionModel.js";
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
+import {v2 as cloudinary} from "cloudinary";
+import mongoose from "mongoose";
 
 // check active auction or not\
 
@@ -60,25 +62,25 @@ const activeOneAuction = await Auction.find({
   createdBy: req.user._id,
   endTime: { $gt: Date.now() },
 });
-if (activeOneAuction) {
+if (activeOneAuction.length > 0) {
   return next(new ErrorHandler("You have already running one auction", 400));
 }
 try {
   const cloudinaryResponse = await cloudinary.uploader.upload(
     image.tempFilePath,
     {
-      folder: "AUCTION_PLATFORM_AUCTION",
+      folder: "AUCTION_PLATFORM_AUCTIONS",
     }
   );
   if (!cloudinaryResponse || cloudinaryResponse.error) {
     console.error(
-      "cloudinaryError : ",
-      cloudinaryResponse || "Internal server error"
+      "cloudinary Error : ",
+      cloudinaryResponse.error || "Unknown cloudinary error"
     );
     return next(new ErrorHandler("Failed to upload image in cloudinary", 500));
   }
   // create auction
-  const auctionCreate = await Auction.create({
+  const auctionItem = await Auction.create({
     title,
     description,
     startTime,
@@ -90,6 +92,7 @@ try {
       public_id: cloudinaryResponse.public_id,
       url: cloudinaryResponse.secure_url,
     },
+    createdBy : req.user._id,
   });
   return res.status(201).json({
     success: true,
