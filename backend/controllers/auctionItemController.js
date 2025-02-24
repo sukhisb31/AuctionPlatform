@@ -3,7 +3,7 @@ import { Auction } from "../models/auctionModel.js";
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
 import {v2 as cloudinary} from "cloudinary";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 // check active auction or not\
 
