@@ -105,3 +105,24 @@ try {
   );
 }
 });
+
+// get all auction items
+export const getAllAuctionItems = catchAsyncError(async(req, res, next) =>{
+  let items = await Auction.find();
+  res.status(200).json({
+    success : true,
+    items,
+  })
+});
+
+//check my auction items
+export const getMyAuctionItems = catchAsyncError(async(req, res, next)=> {});
+
+// get auction details
+export const getAuctionDetails = catchAsyncError(async(req, res, next) => {});
+
+// remove Auction items 
+export const deleteAuctionItem = catchAsyncError(async(req, res, next) => {});
+
+//again republish auction items
+export const republishItem = catchAsyncError(async(req, res, next) => {});
