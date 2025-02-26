@@ -107,7 +107,7 @@ try {
 });
 
 // get all auction items
-export const getAllAuctionItems = catchAsyncError(async(req, res, next) =>{
+export const getAllItems = catchAsyncError(async(req,res,next) => {
   let items = await Auction.find();
   res.status(200).json({
     success : true,
@@ -115,14 +115,28 @@ export const getAllAuctionItems = catchAsyncError(async(req, res, next) =>{
   })
 });
 
-//check my auction items
-export const getMyAuctionItems = catchAsyncError(async(req, res, next)=> {});
+export const getMyAuctionItems = catchAsyncError(async(req,res,next) => {});
 
-// get auction details
-export const getAuctionDetails = catchAsyncError(async(req, res, next) => {});
+export const getAuctionDetails = catchAsyncError(async(req,res,next) => {
+  const {} = req.params;
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return next(new ErrorHandler("Invalid id format",400));
+  }
+  //get auction item
+  const auctionItem = await Auction.findById(id);
+  if(!auctionItem){
+    return next (new ErrorHandler("Auction item is not find", 404));
+  }
+  //get all bids on this auction
+  const bidders = auctionItem.bids.sort((a,b)=> b.bid - a.bid);
+  res.status(200).json({
+    success : true,
+    auctionItem,
+    bidders
+  })
+});
 
-// remove Auction items 
-export const deleteAuctionItem = catchAsyncError(async(req, res, next) => {});
+export const removeFromAuction = catchAsyncError(async(req,res,next) => {});
 
-//again republish auction items
-export const republishItem = catchAsyncError(async(req, res, next) => {});
+export const republishItem = catchAsyncError(async(req,res,next) => {});
+
