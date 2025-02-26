@@ -3,7 +3,7 @@ import { Auction } from "../models/auctionModel.js";
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
 import {v2 as cloudinary} from "cloudinary";
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 // check active auction or not\
 
@@ -115,10 +115,10 @@ export const getAllItems = catchAsyncError(async(req,res,next) => {
   })
 });
 
-export const getMyAuctionItems = catchAsyncError(async(req,res,next) => {});
 
+// get auction details
 export const getAuctionDetails = catchAsyncError(async(req,res,next) => {
-  const {} = req.params;
+  const {id} = req.params;
   if(!mongoose.Types.ObjectId.isValid(id)){
     return next(new ErrorHandler("Invalid id format",400));
   }
@@ -136,7 +136,30 @@ export const getAuctionDetails = catchAsyncError(async(req,res,next) => {
   })
 });
 
-export const removeFromAuction = catchAsyncError(async(req,res,next) => {});
+// get my auction items
+export const getMyAuctionItems = catchAsyncError(async(req,res,next) => {
+  const items = await Auction.find({createdBy : req.user._id});
+  res.status(200).json({
+    success :true,
+    items,
+  })
+});
+export const removeFromAuction = catchAsyncError(async(req,res,next) => {
+  const {id} = req.params;
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return next(new ErrorHandler("Invalid id format",400));
+  }
+  //get auction item
+  const auctionItem = await Auction.findById(id);
+  if(!auctionItem){
+    return next (new ErrorHandler("Auction item is not find", 404));
+  }
+  await auctionItem.deleteOne();
+  res.status(200).json({
+    success: true,
+    message: " auction item deleted successfully",
+  })
+});
 
 export const republishItem = catchAsyncError(async(req,res,next) => {});
 
