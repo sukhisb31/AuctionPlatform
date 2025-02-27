@@ -161,5 +161,56 @@ export const removeFromAuction = catchAsyncError(async(req,res,next) => {
   })
 });
 
-export const republishItem = catchAsyncError(async(req,res,next) => {});
+//Republish end auction item 
+export const republishItem = catchAsyncError(async(req,res,next) => {
+  const {id} = req.params;
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return next (new ErrorHandler("Invalid id format",400));
+  }
+  // get auction item
+  let auctionItem = await Auction.findById(id);
+  if(!auctionItem){
+    return next(new ErrorHandler("Auction item is not find",404));
+  }
+
+  // start time and end time update after republish
+  if(!req.body.startTime || !req.body.endTime){
+    return next(new ErrorHandler("Please provide start and end time",400));
+  }
+  //check auction time
+  if(new Date(auctionItem.endTime) > Date.now()){
+    return next(new ErrorHandler("Auction item is not ended yet",400));
+  }
+  let data = {
+    startTime : new Date(req.body.startTime),
+    endTime : new Date(req.body.endTime),
+  }
+  // check auction time
+  if(data.startTime < Date.now()){
+    return next (new ErrorHandler("Auction starting time must be greater than present time", 400))
+  }
+  if(data.startTime >= data.endTime){
+      return next (new ErrorHandler("Auction item less then ending time", 400))
+  }
+
+  data.bids = [];
+  data.commissionCalculated = false;
+  auctionItem = await Auction.findByIdAndUpdate(id, data,{
+    new : true,
+    runValidators : true,
+    userFindAndModify : false
+  })
+
+  const createdBy = await User.findByIdAndUpdate(req.user._id, {unpaidCommission : 0},{
+    new : true,
+    runValidators : false,
+    userFindAndModify : false
+  });
+  
+  res.status(200).json({
+    success : true,
+    message : `Auction item republished Successfully and will be listed on auction page at ${req.body.startTime}`,
+    auctionItem,
+  })
+});
 
