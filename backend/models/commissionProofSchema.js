@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 export const paymentProofSchema = new mongoose.Schema({
     userId : {
-        type : String,
-        required : true,
+        type : mongoose.Schema.Types.ObjectId,
         ref : "User",
+        required : true,
     },
     proof : {
         public_id : {
@@ -22,7 +22,7 @@ export const paymentProofSchema = new mongoose.Schema({
     },
     status : {
         type : String,
-        default : pending,
+        default : "Pending",
         enum : ["Pending", "Approved", "Rejected", "Settled"],
     },
     amount :{
