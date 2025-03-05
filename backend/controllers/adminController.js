@@ -113,10 +113,10 @@ const users = await User.aggregate([
         $sort: { year: 1, month: 1 },
     },
 ]);
-
+//get Bidder and Auctioneer role in this function
   const bidders = users.filter((user) => user.role === "Bidder");
   const auctioneers = users.filter((user) => user.role === "Auctioneer");
-
+// make an array and store data in array according to month and year
   const transformDataToMonthlyArray = (data, totalMonths = 12) =>{
     const result = Array(totalMonths).fill(0);
     data.forEach( item => {
@@ -124,7 +124,7 @@ const users = await User.aggregate([
     });
     return result;
   };
-
+//set array in months and year
   const bidderArray = transformDataToMonthlyArray(bidders);
   const auctioneerArray = transformDataToMonthlyArray(auctioneers);
 

@@ -43,7 +43,17 @@ userRouter.delete(
   deletePaymentProof
 );
 
-userRouter.get("/users/getall", isAuthenticated, isAuthorized("Admin"), fetchAllUsers);
-userRouter.get("/monthlyincome", isAuthenticated, isAuthorized("Admin"), monthlyRevenue)
+userRouter.get(
+  "/users/getall",
+  isAuthenticated,
+  isAuthorized("Admin"),
+  fetchAllUsers
+);
+userRouter.get(
+  "/monthlyincome",
+  isAuthenticated,
+  isAuthorized("Admin"),
+  monthlyRevenue
+);
 
 export default userRouter;
