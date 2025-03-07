@@ -53,7 +53,19 @@ export const endAuctionCron = () => {
             { new: true }
           );
           const subject = `congratulations! You won the auction for ${auction.title}`;
-          const message = ``;
+          const message = `Dear ${bidder.userName}, \n\n Congratulations! You have won the auction for ${auction.title}. \n\n  
+          **Bank Transfer** : \n- Account Name : ${auctioneer.paymentMethods.bankTransfer.bankAccountName} \n-
+          Bank : ${auctioneer.paymentMethods.bankTransfer.bankName}, \n\n2 
+          **UPI-ID**: \n- You can send payment via Upi-ID : ${auctioneer.paymentMethods.upi_id.bankAccountNumber} \n\n3.
+          **PayPal**: \n- Send payment to: ${auctioneer.paymentMethods.paypal.paypalEmail}, \n\n4. 
+          **Cash On Delivery (COD)**:\n-  If you prefer COD, You must pay 20% of the total amount upfront before delivery.\n-
+          To pay the 20% upfront, use any above methods. \n
+          If you want to see the condition of your auction item then send you email on this : ${auctioneer.email}, \n\n
+          Please ensure your payment is completed by [payment due date]. 
+          Once we confirm the payment, then item will be shipped to you. \n\n 
+          Thank you for participating! \n\n
+          Best Regards, \n 
+          Sukhwinder Singh Auction Team`;
           sendEmail({ email: bidder.email, subject, message });
         } else {
           await auction.save();
