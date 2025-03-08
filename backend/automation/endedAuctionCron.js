@@ -66,7 +66,11 @@ export const endAuctionCron = () => {
           Thank you for participating! \n\n
           Best Regards, \n 
           Sukhwinder Singh Auction Team`;
+          console.log("SENDING EMAIL TO HIGHER BIDDER");
+          
           sendEmail({ email: bidder.email, subject, message });
+          console.log("Successfully EMAIL SEND TO HIGHER BIDDER");
+          
         } else {
           await auction.save();
         }

@@ -191,10 +191,20 @@ export const republishItem = catchAsyncError(async(req,res,next) => {
   }
   if(data.startTime >= data.endTime){
       return next (new ErrorHandler("Auction item less then ending time", 400))
+  };
+
+  //if highest bidder
+  if(auctionItem.highestBidder){
+    const highestBidder = await User.findById(auctionItem.highestBidder);
+    highestBidder.moneySpent -= auctionItem.currentBid;
+    highestBidder.auctionsWon -= -1;
+    highestBidder.save();
   }
 
   data.bids = [];
   data.commissionCalculated = false;
+  data.currentBid = 0;
+  data.highestBidder = null;
   auctionItem = await Auction.findByIdAndUpdate(id, data,{
     new : true,
     runValidators : true,
