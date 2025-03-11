@@ -3,6 +3,7 @@ import { Auction } from "../models/auctionModel.js";
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
 import {v2 as cloudinary} from "cloudinary";
+import {Bid} from "../models/bidSchema.js";
 import mongoose from "mongoose";
 
 // check active auction or not\
@@ -209,8 +210,11 @@ export const republishItem = catchAsyncError(async(req,res,next) => {
     new : true,
     runValidators : true,
     userFindAndModify : false
-  })
+  });
 
+  // delete all auctions
+  await Bid.deleteMany({auctionItem : auctionItem._id});
+//update current Bid 
   const createdBy = await User.findByIdAndUpdate(req.user._id, {unpaidCommission : 0},{
     new : true,
     runValidators : false,

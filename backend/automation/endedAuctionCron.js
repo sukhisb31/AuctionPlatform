@@ -8,7 +8,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 export const endAuctionCron = () => {
   cron.schedule("*/1 * * * *", async () => {
     const now = new Date();
-    // console.log("ended cron running...");
+    console.log("ended cron running...");
     // find ended auctions
     const endedAuctions = await Auction.find({
       endTime: { $lt: now },
