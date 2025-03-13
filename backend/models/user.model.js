@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
         type : String,
         selected : false,
         minLength : [6, "password strength is 6 or more than 6 character"],
-        maxLength : [40, "password not more than 40 character"],
     },
     email: {
         type: String,
