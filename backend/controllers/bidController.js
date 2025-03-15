@@ -32,7 +32,7 @@ export const placeBid = catchAsyncError(async(req,res,next)=>{
         (bid) => bid.userId.toString() == req.user._id.toString()
        );
 
-       if(existingBid || existingBidInAuction){
+       if(existingBid && existingBidInAuction){
             existingBidInAuction.amount = amount;
             existingBid.amount = amount;
             await existingBidInAuction.save();

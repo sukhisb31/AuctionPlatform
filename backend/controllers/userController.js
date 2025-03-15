@@ -146,6 +146,6 @@ export const fetchLeaderboard = catchAsyncError(async(req,res,next)=>{
     const leaderboard = users.sort((a,b)=> b.moneySpent - a.moneySpent);
     res.status(200).json({
         success: true,
-        leaderboard
+        leaderboard,
     })
-})
+});

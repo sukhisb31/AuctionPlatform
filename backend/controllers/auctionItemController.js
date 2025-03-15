@@ -129,7 +129,7 @@ export const getAuctionDetails = catchAsyncError(async(req,res,next) => {
     return next (new ErrorHandler("Auction item is not find", 404));
   }
   //get all bids on this auction
-  const bidders = auctionItem.bids.sort((a,b)=> b.bid - a.bid);
+  const bidders = auctionItem.bids.sort((a,b)=> b.amount - a.amount);
   res.status(200).json({
     success : true,
     auctionItem,
@@ -201,7 +201,7 @@ export const republishItem = catchAsyncError(async(req,res,next) => {
     highestBidder.auctionsWon -= -1;
     highestBidder.save();
   }
-
+  
   data.bids = [];
   data.commissionCalculated = false;
   data.currentBid = 0;
@@ -225,6 +225,7 @@ export const republishItem = catchAsyncError(async(req,res,next) => {
     success : true,
     message : `Auction item republished Successfully and will be listed on auction page at ${req.body.startTime}`,
     auctionItem,
+    createdBy,
   })
 });
 

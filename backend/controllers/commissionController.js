@@ -4,7 +4,7 @@ import {PaymentProof} from "../models/commissionProofSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import {v2 as cloudinary} from "cloudinary";
 import { Auction } from "../models/auctionModel.js";
-
+import mongoose from "mongoose";
 //calculate commission
 export const calculateCommission = async(auctionId) => {
     const auction = await Auction.findById(auctionId);

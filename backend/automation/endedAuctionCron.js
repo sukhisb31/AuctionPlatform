@@ -2,11 +2,11 @@ import cron from "node-cron";
 import {User} from "../models/user.model.js";
 import {Auction} from "../models/auctionModel.js";
 import {sendEmail} from "../utils/sendEmail.js";
-import { calculateCommission } from "../controllers/commissionController";
+import { calculateCommission } from "../controllers/commissionController.js";
 import { Bid } from "../models/bidSchema.js";
 
 export const endedAuctionCron =async()=>{
-    cron.schedule("* * * * *", async()=>{
+    cron.schedule("*/1 * * * *", async()=>{
         const now = new Date();
         console.log("Ended auction cron running...", now);
         
@@ -39,7 +39,7 @@ export const endedAuctionCron =async()=>{
                         {
                             $inc :{
                                 moneySpent : highestBidder.amount,
-                                auctionWon : 1,
+                                auctionsWon : 1,
                             },
                         },
                         {new : true},
