@@ -30,12 +30,17 @@ export const endedAuctionCron =async()=>{
                 auctioneer.unpaidCommission = commissionAmount;
                 await auctioneer.save();
                 if(highestBidder){
-                    // auction.highestBidder = highestBidder.bidder.id;
-                    auction.highestBidder = highestBidder.bidder?._id || highestBidder.bidder?.id;
+                    auction.highestBidder = highestBidder.bidder.id;
+                    // auction.highestBidder = highestBidder.bidder?._id || highestBidder.bidder?.id;
                     await auction.save();
                     //find bidder
-                    const bidder = await User.findById(highestBidder.bidder?._id || highestBidder.bidder?.id);
+                    const bidder = await User.findById(highestBidder.bidder.id);
+                       const subject = "Hello Thank you for participating in the auction!";
+                       const message = "Congratulation! you won the auction";
+                       sendEmail({email: bidder.email, subject, message});
                     console.log(bidder);
+                    console.log(sendEmail);
+                    
                     
                     //update bidder balance
                     await User.findByIdAndUpdate(
@@ -59,26 +64,26 @@ export const endedAuctionCron =async()=>{
                         {new: true},
                     );
                     //send email to bidder
-                    const subject = `Congratulations! You won the auction ${auction.title}`;
-                    const message = `Dear ${bidder.userName}, \n\nCongratulations! You have won the auction for ${auction.title}.
-                     \n\nBefore proceeding for payment contact your auctioneer via your auctioneer email:${auctioneer.email}
-                      \n\nPlease complete your payment using one of the following methods:\n\n1. **Bank Transfer**: \n- Account Name: ${auctioneer.paymentMethods.bankTransfer.bankAccountName} 
-                      \n- Account Number: ${auctioneer.paymentMethods.bankTransfer.bankAccountNumber} 
-                      \n- Bank: ${auctioneer.paymentMethods.bankTransfer.bankName}
-                      \n\n2. **Upi**:\n- You can send payment via UPI: ${auctioneer.paymentMethods.ifsc.upi_Id}
-                      \n\n3. **PayPal**:\n- Send payment to: ${auctioneer.paymentMethods.paypal.paypalEmail}
-                      \n\n4. **Cash on Delivery (COD)**:\n- If you prefer COD, you must pay 20% of the total amount upfront before delivery.
-                      \n- To pay the 20% upfront, use any of the above methods.
-                      \n- The remaining 80% will be paid upon delivery.
-                      \n- If you want to see the condition of your auction item then send your email on this: ${auctioneer.email}
-                      \n\nPlease ensure your payment is completed by [Payment Due Date]. Once we confirm the payment, the item will be shipped to you.
-                      \n\nThank you for participating!\n\nBest regards,
-                      \nSukhwinder Singh Auction Team`;
-                      //check error in sending email
-                      console.log("Sending email to highest bidder...", bidder.email);
-                      //send email to bidder
-                      sendEmail({email: bidder.email, subject, message});
-                      console.log("Email sent to highest bidder successfully");
+                    // const subject = `Congratulations! You won the auction ${auction.title}`;
+                    // const message = `Dear ${bidder.userName}, \n\nCongratulations! You have won the auction for ${auction.title}.
+                    //  \n\nBefore proceeding for payment contact your auctioneer via your auctioneer email:${auctioneer.email}
+                    //   \n\nPlease complete your payment using one of the following methods:\n\n1. **Bank Transfer**: \n- Account Name: ${auctioneer.paymentMethods.bankTransfer.bankAccountName} 
+                    //   \n- Account Number: ${auctioneer.paymentMethods.bankTransfer.bankAccountNumber} 
+                    //   \n- Bank: ${auctioneer.paymentMethods.bankTransfer.bankName}
+                    //   \n\n2. **Upi**:\n- You can send payment via UPI: ${auctioneer.paymentMethods.ifsc.upi_Id}
+                    //   \n\n3. **PayPal**:\n- Send payment to: ${auctioneer.paymentMethods.paypal.paypalEmail}
+                    //   \n\n4. **Cash on Delivery (COD)**:\n- If you prefer COD, you must pay 20% of the total amount upfront before delivery.
+                    //   \n- To pay the 20% upfront, use any of the above methods.
+                    //   \n- The remaining 80% will be paid upon delivery.
+                    //   \n- If you want to see the condition of your auction item then send your email on this: ${auctioneer.email}
+                    //   \n\nPlease ensure your payment is completed by [Payment Due Date]. Once we confirm the payment, the item will be shipped to you.
+                    //   \n\nThank you for participating!\n\nBest regards,
+                    //   \nSukhwinder Singh Auction Team`;
+                    //   //check error in sending email
+                    //   console.log("Sending email to highest bidder...", bidder.email);
+                    //   //send email to bidder
+                    //   sendEmail({email: bidder.email, subject, message});
+                    //   console.log("Email sent to highest bidder successfully");
                       
                     }
                     else{
