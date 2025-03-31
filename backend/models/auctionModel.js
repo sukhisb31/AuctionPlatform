@@ -1,72 +1,72 @@
-
-
 import mongoose from "mongoose";
 
 const auctionSchema = new mongoose.Schema({
     title: {
         type: String,
-        required : true,
+        required: true,
     },
-    description : {
-        type : String,
+    description: {
+        type: String,
     },
-    startingBid : {
+    startingBid: {
         type: Number,
+        required: true,
     },
-    condition : {
-        type : String,
-        enum :["New", "Used"],
+    condition: {
+        type: String,
+        enum: ["New", "Used"],
     },
-    category : String,
-    currentBid :{
-        type : Number,
-        default : 0,
+    category: String,
+    currentBid: {
+        type: Number,
+        default: 0,
     },
-    startTime :  String,
-    endTime : String,
-    image :{
-        public_id : {
-            type : String,
-            required : true,
+    startTime: {
+        type: String,
+        required: true,
+    },
+    endTime: {
+        type: String,
+        required: true,
+    },
+    image: {
+        public_id: {
+            type: String,
+            required: true,
         },
-        url : {
-            type : String,
-            required : true,
+        url: {
+            type: String,
+            required: true,
         },
     },
-    createdBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        required : true,
-    },
-    currentBid:{
-        type : Number,
-        default:0,
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
     bids: [
         {
-            userId :{
+            userId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref:"Bid",
+                ref: "Bid",
             },
-            userName : String,
-            amount : Number,
-            profileImage : String,
+            userName: String,
+            amount: Number,
+            profileImage: String,
         },
     ],
-    commissionCalculated : {
-        type : Boolean,
-        default : false,
+    commissionCalculated: {
+        type: Boolean,
+        default: 0,
     },
-    highestBidder : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User"
+    highestBidder: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
-    createdAt : {
-        type : Date,
-        default : Date.now,
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
 });
-
 
 export const Auction = mongoose.model("Auction", auctionSchema);

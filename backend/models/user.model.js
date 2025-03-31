@@ -3,69 +3,67 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    userName : {
+    userName: {
         type: String,
-        required : true,
-        minLength : [3, "userName must contain at least 3 character or more"],
-        maxLength :[40, "username not exceed 40 character"],
+        required: true,
+        minLength: [3, "user name must contain at least 3 character or more"],
+        maxLength:[40, "user name not exceed 40 character"],
     },
-    password :{
-        type : String,
-        selected : false,
-        minLength : [6, "password strength is 6 or more than 6 character"],
+    password:{
+        type: String,
+        selected: false,
+        minLength: [6, "password strength is 6 or more than 6 character"],
     },
     email: {
         type: String,
         required : true,
     },
     address: String,
-    phone : {
+    phone: {
         type :String,
-        minLength :[10, "Enter valid phone number"],
-        maxLength:[10, "enter correct phone number"],
     },
     profileImage:{
         public_id:{
             type: String,
-            required : true,
+            required: true,
         },
-        url :{
+        url:{
             type : String,
             required :true,
         },
     },
-    paymentMethods :{
-        bankTransfer : {
-            bankAccountNumber : String,
-            bankAccountName : String,
-            bankName : String,
+    paymentMethods:{
+        bankTransfer: {
+            bankAccountNumber: String,
+            bankAccountName: String,
+            bankName: String,
         },
-        ifsc :{
-            upi_Id : String,
+        ifsc:{
+            upi_Id: String,
         },
-        paypal :{
+        paypal:{
             paypalEmail: String,
         },
     },
     role: {
         type: String,
-        enum : ["Auctioneer", "Bidder", "Super Admin"],
+        enum: ["Auctioneer", "Bidder", "Super Admin"],
     },
-    unpaidCommission : {
+    unpaidCommission: {
         type: Number,
-        default : 0,
+        default: 0,
     },
-    auctionWOn : {
-        type : Number,
-        default : 0,
-    },
-    moneySpent : {
+    auctionsWon: {
         type: Number,
-        default : 0,
+        default: 0,
     },
-    createdAt : {
-        type : Date,
-        default : Date.now,
+    moneySpent: {
+        type: Number,
+        default: 0,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
 
 });
@@ -85,9 +83,9 @@ userSchema.methods.comparePassword = async function (enterPassword){
 //generate jwt web token
 userSchema.methods.generateJsonWebToken = function(){
     return jwt.sign(
-        {id : this._id},
+        {id: this._id},
         process.env.JWT_SECRET_KEY,
-        {expiresIn : process.env.JWT_EXPIRE_KEY}
+        {expiresIn: process.env.JWT_EXPIRE_KEY}
     )
 }
 

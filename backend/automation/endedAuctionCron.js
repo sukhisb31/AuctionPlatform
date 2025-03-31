@@ -12,8 +12,8 @@ export const endedAuctionCron =async()=>{
         
         //get all ended auctions
         const endedAuctions = await Auction.find({
-            endedTime : {$lt : now},
-            commissionCalculated : false,
+            endTime: {$lt: now},
+            commissionCalculated: false,
         });
         //get all users who bid on these auctions
         for (const auction of endedAuctions) {
@@ -22,37 +22,41 @@ export const endedAuctionCron =async()=>{
                 auction.commissionCalculated = true;
                 //find highest bidder
                 const highestBidder = await Bid.findOne({
-                    auctionItem : auction._id,
-                    amount : auction.currentBid,
+                    auctionItem: auction._id,
+                    amount: auction.currentBid,
                 });
                 //find auctioneer those placed item for auction
                 const auctioneer = await User.findById(auction.createdBy);
                 auctioneer.unpaidCommission = commissionAmount;
+                await auctioneer.save();
                 if(highestBidder){
-                    auction.highestBidder = highestBidder.bidder.id;
+                    // auction.highestBidder = highestBidder.bidder.id;
+                    auction.highestBidder = highestBidder.bidder?._id || highestBidder.bidder?.id;
                     await auction.save();
                     //find bidder
-                    const bidder = await User.findById(highestBidder.bidder.id);
+                    const bidder = await User.findById(highestBidder.bidder?._id || highestBidder.bidder?.id);
+                    console.log(bidder);
+                    
                     //update bidder balance
                     await User.findByIdAndUpdate(
                         bidder._id,
                         {
-                            $inc :{
-                                moneySpent : highestBidder.amount,
-                                auctionsWon : 1,
+                            $inc:{
+                                moneySpent: highestBidder.amount,
+                                auctionsWon: 1,
                             },
                         },
-                        {new : true},
+                        {new: true},
                     );
                     //update auctioneer balance
                     await User.findByIdAndUpdate(
                         auctioneer._id,
                         {
-                            $inc :{
-                                unpaidCommission : commissionAmount,
+                            $inc:{
+                                unpaidCommission: commissionAmount,
                             },
                         },
-                        {new : true},
+                        {new: true},
                     );
                     //send email to bidder
                     const subject = `Congratulations! You won the auction ${auction.title}`;
@@ -73,7 +77,7 @@ export const endedAuctionCron =async()=>{
                       //check error in sending email
                       console.log("Sending email to highest bidder...", bidder.email);
                       //send email to bidder
-                      sendEmail({email : bidder.email, subject, message});
+                      sendEmail({email: bidder.email, subject, message});
                       console.log("Email sent to highest bidder successfully");
                       
                     }

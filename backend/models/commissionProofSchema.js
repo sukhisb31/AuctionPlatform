@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export const paymentProofSchema = new mongoose.Schema({
+const paymentProofSchema = new mongoose.Schema({
     userId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
@@ -25,11 +25,8 @@ export const paymentProofSchema = new mongoose.Schema({
         default : "Pending",
         enum : ["Pending", "Approved", "Rejected", "Settled"],
     },
-    amount :{
-        type: Number,
-        required : true,
-    },
-    comment : String,
+    amount: Number,
+    comment: String,
 });
 
 export const PaymentProof = mongoose.model("PaymentProof", paymentProofSchema);
