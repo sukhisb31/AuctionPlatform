@@ -12,6 +12,7 @@ import commissionRouter from "./routers/commissionRouter.js";
 import adminRouter from "./routers/adminRouter.js";
 import { endedAuctionCron } from "./automation/endedAuctionCron.js";
 import { verifyCommissionCron } from "./automation/verifyCommissionCron.js";
+import { sendEmail } from "./utils/sendEmail.js";
 
 
 
@@ -46,6 +47,7 @@ app.use("/api/v1/admin", adminRouter);
 
 endedAuctionCron();
 verifyCommissionCron();
+
 connection();
 
 app.use(errorMiddleware)
